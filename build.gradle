@@ -1,0 +1,20 @@
+plugins {
+    id 'application'
+}
+
+group = 'com.sixthsense'
+version = '0.0'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+application {
+    mainClass = 'com.sixthsense.Main'
+}
