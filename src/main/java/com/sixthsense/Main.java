@@ -1,12 +1,17 @@
 package com.sixthsense;
 
+
 import com.sixthsense.database.DatabaseManager;
+import com.sixthsense.event.EventLogger;
 import com.sixthsense.model.SystemSnapshot;
 import com.sixthsense.system.SystemInfo;
 
+
 public class Main {
 
+
     public static void main(String[] args) {
+
 
         // ==========================================
         // SixthSense SxS Application Startup
@@ -17,40 +22,80 @@ public class Main {
         System.out.println("  Programmer: Kaung");
         System.out.println("================================");
 
+
+
         // ------------------------------------------
         // Feature 2 : SQLite Database Initialization
-        // - Create database folder (if missing)
-        // - Connect to SQLite
-        // - Create required tables
+        // - Create database folder
+        // - Connect SQLite database
+        // - Create application tables
         // ------------------------------------------
         DatabaseManager databaseManager = new DatabaseManager();
+
         databaseManager.initializeDatabase();
+
         databaseManager.createTables();
 
+        databaseManager.createEventLogTable();
+
+
+
+        // ------------------------------------------
+        // Feature 3 : Event Logging
+        // Record application startup event
+        // ------------------------------------------
+        EventLogger eventLogger = new EventLogger(databaseManager);
+
+
+        eventLogger.logEvent(
+                "APPLICATION_STARTED",
+                "SixthSense SxS application started"
+        );
+
+
+
         System.out.println();
+
+
 
         // ------------------------------------------
         // Feature 1 : Collect System Information
         // ------------------------------------------
         SystemInfo systemInfo = new SystemInfo();
+
         SystemSnapshot snapshot = systemInfo.getSystemSnapshot();
 
+
+
         // ------------------------------------------
-        // Save current system snapshot into SQLite
+        // Feature 2 : Save System Information
+        // Store snapshot into SQLite database
         // ------------------------------------------
         databaseManager.insertSystemSnapshot(snapshot);
 
+
+
         // ------------------------------------------
-        // Display saved system history
+        // Feature 2 : Display Saved History
         // ------------------------------------------
         databaseManager.showSystemHistory();
 
+        // ------------------------------------------
+        // Feature 3 : Display Event History
+        // ------------------------------------------
+        databaseManager.showEventHistory();
+
+
+
         System.out.println();
 
+
+
         // ------------------------------------------
-        // Display current system information
+        // Feature 1 : Display Current System Info
         // ------------------------------------------
         systemInfo.showSystemInfo(snapshot);
+
 
     }
 
