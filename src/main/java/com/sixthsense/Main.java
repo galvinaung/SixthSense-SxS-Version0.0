@@ -6,6 +6,7 @@ import com.sixthsense.event.EventLogger;
 import com.sixthsense.model.SystemSnapshot;
 import com.sixthsense.system.SystemInfo;
 import com.sixthsense.monitor.UserSessionMonitor;
+import com.sixthsense.monitor.PowerMonitor;
 
 
 public class Main {
@@ -53,6 +54,20 @@ public class Main {
 
         EventLogger eventLogger =
                 new EventLogger(databaseManager);
+
+        // ------------------------------------------
+        // Feature 3.3 : Power Monitoring
+        // Detect POWER_ON and SHUTDOWN events
+        // ------------------------------------------
+
+        PowerMonitor powerMonitor =
+                new PowerMonitor(eventLogger);
+
+
+        powerMonitor.detectPowerOn();
+
+
+        powerMonitor.registerShutdownHook();
 
 
 
