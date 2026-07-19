@@ -1,5 +1,6 @@
 package com.sixthsense;
 
+import com.sixthsense.database.DatabaseManager;
 import com.sixthsense.system.SystemInfo;
 
 public class Main {
@@ -11,6 +12,11 @@ public class Main {
         System.out.println("  Status: Running");
         System.out.println("  Programmer: Kaung");
         System.out.println("================================");
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.initializeDatabase();
+
+        System.out.println();
 
         SystemInfo systemInfo = new SystemInfo();
         systemInfo.showSystemInfo();
