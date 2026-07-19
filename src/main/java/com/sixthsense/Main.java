@@ -1,5 +1,7 @@
 package com.sixthsense;
 
+import com.sixthsense.system.SystemInfo;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -10,5 +12,9 @@ public class Main {
         System.out.println("  Programmer: Kaung");
         System.out.println("================================");
 
+        SystemInfo systemInfo = new SystemInfo();
+        systemInfo.showSystemInfo();
+
     }
+
 }
