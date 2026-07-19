@@ -15,6 +15,7 @@ public class Main {
 
         DatabaseManager databaseManager = new DatabaseManager();
         databaseManager.initializeDatabase();
+        databaseManager.createTables();
 
         System.out.println();
 
