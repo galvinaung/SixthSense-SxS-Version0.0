@@ -5,8 +5,13 @@ import com.sixthsense.database.DatabaseManager;
 import com.sixthsense.event.EventLogger;
 import com.sixthsense.model.SystemSnapshot;
 import com.sixthsense.system.SystemInfo;
+
 import com.sixthsense.monitor.UserSessionMonitor;
 import com.sixthsense.monitor.PowerMonitor;
+import com.sixthsense.monitor.NetworkMonitor;
+
+import com.sixthsense.device.DeviceManager;
+
 
 
 public class Main {
@@ -18,11 +23,13 @@ public class Main {
         // ==========================================
         // SixthSense SxS Application Startup
         // ==========================================
+
         System.out.println("================================");
         System.out.println("  SixthSense SxS Version 0.0");
         System.out.println("  Status: Running");
         System.out.println("  Programmer: Kaung");
         System.out.println("================================");
+
 
 
         // ------------------------------------------
@@ -33,13 +40,38 @@ public class Main {
         // - Create application tables
         // ------------------------------------------
 
-        DatabaseManager databaseManager = new DatabaseManager();
+        DatabaseManager databaseManager =
+                new DatabaseManager();
+
 
         databaseManager.initializeDatabase();
 
+
         databaseManager.createTables();
 
+
         databaseManager.createEventLogTable();
+
+
+
+        // ------------------------------------------
+        // Feature 4.1 : Device Identity
+        //
+        // Purpose:
+        // - Create unique SixthSense device ID
+        // - Identify this computer
+        //
+        // Future:
+        // - Device pairing
+        // - Multiple PC communication
+        // ------------------------------------------
+
+        DeviceManager deviceManager =
+                new DeviceManager();
+
+
+        deviceManager.showDeviceInfo();
+
 
 
 
@@ -49,15 +81,23 @@ public class Main {
         // Central event recorder
         // Used by:
         // - Application events
-        // - User session events
+        // - Power events
+        // - Network events
+        // - Login events
         // ------------------------------------------
 
         EventLogger eventLogger =
                 new EventLogger(databaseManager);
 
+
+
+
         // ------------------------------------------
         // Feature 3.3 : Power Monitoring
-        // Detect POWER_ON and SHUTDOWN events
+        //
+        // Detect:
+        // - POWER_ON
+        // - SHUTDOWN
         // ------------------------------------------
 
         PowerMonitor powerMonitor =
@@ -71,10 +111,31 @@ public class Main {
 
 
 
+
+
+        // ------------------------------------------
+        // Feature 3.4 : Network Monitoring
+        //
+        // Detect:
+        // - NETWORK_CONNECTED
+        // - NETWORK_DISCONNECTED
+        // ------------------------------------------
+
+        NetworkMonitor networkMonitor =
+                new NetworkMonitor(eventLogger);
+
+
+        networkMonitor.checkNetworkStatus();
+
+
+
+
+
         // ------------------------------------------
         // Feature 3.2 : User Session Monitoring
         //
-        // Detect current logged-in Windows user
+        // Detect:
+        // - LOGIN_SUCCESS
         // ------------------------------------------
 
         UserSessionMonitor sessionMonitor =
@@ -82,6 +143,8 @@ public class Main {
 
 
         sessionMonitor.checkCurrentUser();
+
+
 
 
 
@@ -96,7 +159,11 @@ public class Main {
 
 
 
+
+
         System.out.println();
+
+
 
 
 
@@ -104,18 +171,26 @@ public class Main {
         // Feature 1 : Collect System Information
         // ------------------------------------------
 
-        SystemInfo systemInfo = new SystemInfo();
+        SystemInfo systemInfo =
+                new SystemInfo();
+
 
         SystemSnapshot snapshot =
                 systemInfo.getSystemSnapshot();
 
 
 
+
+
         // ------------------------------------------
         // Feature 2 : Save System Information
+        //
+        // Store snapshot into SQLite
         // ------------------------------------------
 
         databaseManager.insertSystemSnapshot(snapshot);
+
+
 
 
 
@@ -127,6 +202,8 @@ public class Main {
 
 
 
+
+
         // ------------------------------------------
         // Feature 3 : Display Event History
         // ------------------------------------------
@@ -135,7 +212,11 @@ public class Main {
 
 
 
+
+
         System.out.println();
+
+
 
 
 
