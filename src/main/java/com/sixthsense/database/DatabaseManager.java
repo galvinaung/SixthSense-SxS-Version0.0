@@ -5,6 +5,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import com.sixthsense.model.SystemSnapshot;
 
 public class DatabaseManager {
 
@@ -77,6 +81,89 @@ public class DatabaseManager {
         } catch (SQLException exception) {
 
             System.out.println("Failed to create table.");
+            exception.printStackTrace();
+
+        }
+
+    }
+
+    public void insertSystemSnapshot(SystemSnapshot snapshot) {
+
+        String sql = """
+                INSERT INTO system_information (
+                    computer_name,
+                    username,
+                    os_name,
+                    os_version,
+                    java_version,
+                    cpu_architecture,
+                    processors,
+                    total_memory,
+                    free_memory,
+                    used_memory,
+                    created_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                """;
+
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, snapshot.getComputerName());
+            statement.setString(2, snapshot.getUsername());
+            statement.setString(3, snapshot.getOsName());
+            statement.setString(4, snapshot.getOsVersion());
+            statement.setString(5, snapshot.getJavaVersion());
+            statement.setString(6, snapshot.getCpuArchitecture());
+            statement.setInt(7, snapshot.getProcessors());
+            statement.setDouble(8, snapshot.getTotalMemory());
+            statement.setDouble(9, snapshot.getFreeMemory());
+            statement.setDouble(10, snapshot.getUsedMemory());
+            statement.setString(11, snapshot.getCreatedAt());
+
+            statement.executeUpdate();
+
+            System.out.println("System information saved successfully.");
+
+        } catch (SQLException exception) {
+
+            System.out.println("Failed to save system information.");
+            exception.printStackTrace();
+
+        }
+
+    }
+
+    public void showSystemHistory() {
+
+        String sql = """
+                SELECT *
+                FROM system_information
+                ORDER BY id;
+                """;
+
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            System.out.println();
+            System.out.println("===== Saved System History =====");
+
+            while (resultSet.next()) {
+
+                System.out.println("ID              : " + resultSet.getInt("id"));
+                System.out.println("Computer Name   : " + resultSet.getString("computer_name"));
+                System.out.println("Username        : " + resultSet.getString("username"));
+                System.out.println("Operating System: " + resultSet.getString("os_name"));
+                System.out.println("Java Version    : " + resultSet.getString("java_version"));
+                System.out.println("Created At      : " + resultSet.getString("created_at"));
+
+                System.out.println("----------------------------------------");
+            }
+
+        } catch (SQLException exception) {
+
+            System.out.println("Failed to read system history.");
             exception.printStackTrace();
 
         }
